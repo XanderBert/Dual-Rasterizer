@@ -23,6 +23,7 @@ namespace dae
 		//----------------------------------------
 		ID3DX11Effect* GetEffect() const;
 		ID3DX11EffectTechnique* GetTechnique() const;
+		void SetWorldViewProjectionMatrix(const float* pData);
 
 	private:
 		//----------------------------------------

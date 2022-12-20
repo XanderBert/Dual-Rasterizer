@@ -6,7 +6,6 @@
 dae::Effect::Effect(ID3D11Device* pDevice, const std::wstring& assetFile):
 m_pEffect{LoadEffect(pDevice, assetFile)}
 {
-	//m_pTechnique = m_pEffect->GetTechniqueByIndex(0);
 	m_pTechnique = m_pEffect->GetTechniqueByName("DefaultTechnique");
 	if (!m_pTechnique->IsValid())
 	{
@@ -19,7 +18,7 @@ m_pEffect{LoadEffect(pDevice, assetFile)}
 	{
 		std::wcout << L"\nm_pMatWorldViewProjVariable not valid\n";
 		assert(false, "\m_pMatWorldViewProjVariable not valid\n");
-	}
+	}	
 }
 
 dae::Effect::~Effect()
@@ -38,6 +37,11 @@ ID3DX11Effect* dae::Effect::GetEffect() const
 ID3DX11EffectTechnique* dae::Effect::GetTechnique() const
 {
 	return  m_pTechnique;
+}
+
+void dae::Effect::SetWorldViewProjectionMatrix(const float* pData)
+{
+	m_pMatWorldViewProjVariable->SetMatrix(pData);
 }
 
 ID3DX11Effect* dae::Effect::LoadEffect(ID3D11Device* pDevice, const std::wstring& assetFile)

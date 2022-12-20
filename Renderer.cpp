@@ -3,6 +3,7 @@
 #include <cassert>
 #include "Mesh.h"
 #include "Camera.h"
+#include "Effect.h"
 
 namespace dae {
 
@@ -16,7 +17,7 @@ namespace dae {
 		SetIsInitialized(InitializeDirectX());
 
 		//Initialize Camera
-		m_pCamera = new Camera{ {0.f, 0.f, -10.f},45.f,static_cast<float>(m_Width), static_cast<float>(m_Height) };
+		m_pCamera = new Camera{ {0.f, 0.f, -10.f},80.f,static_cast<float>(m_Width), static_cast<float>(m_Height) };
 
 		//Create Data for our mesh
 		std::vector<Vertex> vertices
@@ -46,12 +47,25 @@ namespace dae {
 		if (m_pDevice) m_pDevice->Release();
 
 		delete m_pMesh;
-		delete m_pCamera;
+		delete m_pCamera;		
 	}
 
 	void Renderer::Update(const Timer* pTimer)
 	{
+		m_pCamera->Update(pTimer);
+		
+		Matrix worldViewMatrix{ m_pCamera->GetViewMatrix() * m_pCamera->GetProjectionMatrix(1.f,100.f) };
 
+		//Reinterpret Matrix data to a float pointer [array of a 4x4 matrix]
+		//TODO put this code in the matrix file
+		float reinterpeted[16]{};
+		int first{ 0 };
+		for (size_t i{}; i < 16; ++i)
+		{
+			reinterpeted[i] = (worldViewMatrix[first][i % 4]);
+			if (i % 4 == 0 && i != 0) ++first;
+		}		
+		m_pMesh->Update(&reinterpeted[0]);
 	}
 
 

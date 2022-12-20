@@ -113,3 +113,8 @@ void dae::Mesh::Render(ID3D11DeviceContext* pDeviceContext) const
 		pDeviceContext->DrawIndexed(m_NumIndices, 0, 0);
 	}
 }
+
+void dae::Mesh::Update(const float* pWorldViewMatrixData)
+{
+	m_pEffect->SetWorldViewProjectionMatrix(pWorldViewMatrixData);
+}

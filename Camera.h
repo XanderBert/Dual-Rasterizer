@@ -8,7 +8,6 @@ namespace dae
 		// Constructor(s) and Destructor
 		//----------------------------------------
 		Camera(const Vector3& origin, float fovAngle, float width, float height);
-		~Camera();
 		//----------------------------------------
 		//  Disabling copy/move constructor and assignment operator
 		//----------------------------------------
@@ -21,6 +20,7 @@ namespace dae
 		//----------------------------------------
 		[[nodiscard]] Matrix GetViewMatrix() const;
 		[[nodiscard]] Matrix GetProjectionMatrix(float zn, float zf) const;
+		void Update(const Timer* pTimer);
 		
 	private:
 		//----------------------------------------
@@ -29,6 +29,9 @@ namespace dae
 		Vector3 m_Origin{};
 		float m_FOV{};
 		float m_AspectRatio{};
+		float m_TotalYaw{};
+		float m_TotalPitch{};
+
 
 		Vector3 m_Forward{ Vector3::UnitZ };
 		Vector3 m_Up{ Vector3::UnitY };

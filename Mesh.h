@@ -32,6 +32,7 @@ namespace dae
 		// General Methods
 		//----------------------------------------
 		void Render(ID3D11DeviceContext* pDeviceContext) const;
+		void Update(const float* pWorldViewMatrixData);
 	private:
 		//----------------------------------------
 		// Datamembers
