@@ -1,14 +1,15 @@
 #pragma once
 
-class Effect;
-
 namespace dae
 {
+	class Texture;
 	class Effect;
-	struct Vertex
+	struct Vertex final
 	{
 		Vector3 Position;
 		ColorRGB Color;
+		Vector2 uv;
+		
 	};
 
 	class Mesh final
@@ -18,6 +19,7 @@ namespace dae
 		// Constructor(s) and Destructor
 		//----------------------------------------
 		Mesh(ID3D11Device* pDevice, std::vector<Vertex>& vertices, std::vector<uint32_t>& indices);
+		Mesh(ID3D11Device* pDevice, const std::string& objFile, const std::string& diffuseFile);
 		~Mesh();
 
 		//----------------------------------------
@@ -34,6 +36,8 @@ namespace dae
 		void Render(ID3D11DeviceContext* pDeviceContext) const;
 		void Update(const float* pWorldViewMatrixData);
 	private:
+		HRESULT SetUpMesh(ID3D11Device* pDevice, std::vector<Vertex>& vertices, std::vector<uint32_t>& indices);
+
 		//----------------------------------------
 		// Datamembers
 		//----------------------------------------
@@ -43,5 +47,7 @@ namespace dae
 		ID3D11InputLayout* m_pInputLayout{ nullptr };
 		ID3D11Buffer* m_pVertexBuffer{ nullptr };
 		ID3D11Buffer* m_pIndexBuffer{ nullptr };
+
+		Texture* m_pTexture{ nullptr };
 	};
 }

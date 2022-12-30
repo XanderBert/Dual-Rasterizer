@@ -19,7 +19,8 @@ namespace dae
 		//----------------------------------------
 		// General Methods
 		//----------------------------------------
-
+		ID3D11Texture2D* GetTexture2D();
+		ID3D11ShaderResourceView* GetSRV();
 	private:
 		//----------------------------------------
 		// Datamembers

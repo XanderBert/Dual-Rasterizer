@@ -1,4 +1,15 @@
 float4x4 gWorldViewProj : WorldViewProjection;
+Texture2D gDiffuseMap : DiffuseMap;
+
+//------------------------------------------------
+// SamplerState
+//------------------------------------------------
+SamplerState samPoint
+{
+	Filter = MIN_MAG_MIP_POINT;
+	AddressU = Wrap;
+	AddressV = Wrap;
+};
 
 //------------------------------------------------
 // Input/Output Struct
@@ -6,13 +17,13 @@ float4x4 gWorldViewProj : WorldViewProjection;
 struct VS_INPUT
 {
 	float3 Position : POSITION;
-	float3 Color : COLOR;
+	float2 uv : TEXCOORD;
 };
 
 struct VS_OUTPUT
 {
 	float4 Position : SV_POSITION;
-	float3 Color : COLOR;
+	float2 uv : TEXCOORD;
 };
 
 //------------------------------------------------
@@ -22,7 +33,7 @@ VS_OUTPUT VS(VS_INPUT input)
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
 	output.Position = float4(mul(float4(input.Position,1.f), gWorldViewProj));
-	output.Color = input.Color;
+	output.uv = input.uv;
 	return output;
 }
 
@@ -31,7 +42,7 @@ VS_OUTPUT VS(VS_INPUT input)
 //------------------------------------------------
 float4 PS(VS_OUTPUT input) : SV_TARGET
 {
-	return float4(input.Color, 1.0f);
+	return gDiffuseMap.Sample(samPoint,input.uv);
 }
 
 //------------------------------------------------

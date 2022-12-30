@@ -20,14 +20,7 @@ namespace dae {
 		m_pCamera = new Camera{ {0.f, 0.f, -10.f},80.f,static_cast<float>(m_Width), static_cast<float>(m_Height) };
 
 		//Create Data for our mesh
-		std::vector<Vertex> vertices
-		{
-			{ { 0.0f, 3.f, 2.f }, { 1.0f, 0.0f, 0.0f } },
-			{ { 3.f, -3.f, 0.5f }, { 0.0f, 0.0f, 1.0f } },
-			{ { -3.f, -3.f, 2.f }, { 0.0f, 1.0f, 0.0f } }
-		};
-		std::vector<uint32_t> indices{ 0, 1, 2 };
-		m_pMesh = new Mesh{ m_pDevice, vertices, indices };
+		m_pMesh = new Mesh{ m_pDevice,"Resources/vehicle.obj","Resources/vehicle_diffuse.png"};
 
 	}
 
@@ -53,21 +46,11 @@ namespace dae {
 	void Renderer::Update(const Timer* pTimer)
 	{
 		m_pCamera->Update(pTimer);
-		
-		Matrix worldViewMatrix{ m_pCamera->GetViewMatrix() * m_pCamera->GetProjectionMatrix(1.f,100.f) };
 
-		//Reinterpret Matrix data to a float pointer [array of a 4x4 matrix]
-		//TODO put this code in the matrix file
-		float reinterpeted[16]{};
-		int first{ 0 };
-		for (size_t i{}; i < 16; ++i)
-		{
-			reinterpeted[i] = (worldViewMatrix[first][i % 4]);
-			if (i % 4 == 0 && i != 0) ++first;
-		}		
-		m_pMesh->Update(&reinterpeted[0]);
+		//TODO: set near and far plane as member vars
+		const Matrix worldViewMatrix{ m_pCamera->GetViewMatrix() * m_pCamera->GetProjectionMatrix(1.f,100.f) };
+		m_pMesh->Update(reinterpret_cast<const float*>(&worldViewMatrix));
 	}
-
 
 	void Renderer::Render() const
 	{
@@ -246,6 +229,7 @@ namespace dae {
 		else
 		{
 			std::cout << "DirectX initialization failed!\n";
+			assert(false, "DirectX initialization failed!\n");
 		}
 	}
 }

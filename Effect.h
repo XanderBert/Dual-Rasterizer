@@ -1,6 +1,7 @@
 #pragma once
 namespace dae
 {
+	class Texture;
 	class Effect final
 	{
 	public:
@@ -24,6 +25,7 @@ namespace dae
 		ID3DX11Effect* GetEffect() const;
 		ID3DX11EffectTechnique* GetTechnique() const;
 		void SetWorldViewProjectionMatrix(const float* pData);
+		void SetDiffuseMap(Texture* pDiffuseTexture);
 
 	private:
 		//----------------------------------------
@@ -32,6 +34,7 @@ namespace dae
 		ID3DX11Effect* m_pEffect{ nullptr };
 		ID3DX11EffectTechnique* m_pTechnique{ nullptr };
 		ID3DX11EffectMatrixVariable* m_pMatWorldViewProjVariable{ nullptr };
+		ID3DX11EffectShaderResourceVariable* m_pDiffuseMapVariable{ nullptr };
 
 		//----------------------------------------
 		// General Methods

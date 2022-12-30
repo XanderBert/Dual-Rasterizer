@@ -7,6 +7,13 @@ dae::Texture::Texture(const std::string& path, ID3D11Device* pDevice)
 {
 	SDL_Surface* pSurface = { IMG_Load(path.c_str()) };
 
+	if (!pSurface) 
+	{
+		std::wcout << L"\SDL_Surface(Texture) not loaded\n";
+		assert(false, "\nSDL_Surface(Texture) not loaded\n");
+	}
+
+
 	DXGI_FORMAT format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	D3D11_TEXTURE2D_DESC desc{};
 	desc.Width = pSurface->w;
@@ -21,7 +28,7 @@ dae::Texture::Texture(const std::string& path, ID3D11Device* pDevice)
 	desc.CPUAccessFlags = 0;
 	desc.MiscFlags = 0;
 
-	D3D11_SUBRESOURCE_DATA initData;
+	D3D11_SUBRESOURCE_DATA initData{};
 	initData.pSysMem = pSurface->pixels;
 	initData.SysMemPitch = static_cast<UINT>(pSurface->pitch);
 	initData.SysMemSlicePitch = static_cast<UINT>(pSurface->h * pSurface->pitch);
@@ -45,11 +52,20 @@ dae::Texture::Texture(const std::string& path, ID3D11Device* pDevice)
 	}
 
 	SDL_FreeSurface(pSurface);
-	delete pSurface;
 }
 
 dae::Texture::~Texture()
 {
 	if(m_pResource)m_pResource->Release();
 	if(m_pSRV)m_pSRV->Release();
+}
+
+ID3D11Texture2D* dae::Texture::GetTexture2D()
+{
+	return m_pResource;
+}
+
+ID3D11ShaderResourceView* dae::Texture::GetSRV()
+{
+	return m_pSRV;
 }
