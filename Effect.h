@@ -26,6 +26,7 @@ namespace dae
 		ID3DX11EffectTechnique* GetTechnique() const;
 		void SetWorldViewProjectionMatrix(const float* pData);
 		void SetDiffuseMap(Texture* pDiffuseTexture);
+		void SetTechnique(const LPCSTR& techniqueName);
 
 	private:
 		//----------------------------------------

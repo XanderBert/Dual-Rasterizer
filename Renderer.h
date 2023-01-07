@@ -27,7 +27,7 @@ namespace dae
 		//----------------------------------------
 		// General Methods
 		//----------------------------------------
-		void Update(const Timer* pTimer);
+		void Update(const Timer* pTimer, const LPCSTR& technique);
 		void Render() const;
 
 	private:
@@ -44,6 +44,7 @@ namespace dae
 		Mesh* m_pMesh{ nullptr };
 
 		Camera* m_pCamera{ nullptr };
+		LPCSTR m_CurrentTechnique{};
 
 		//Pointers for Initialization
 		ID3D11Device* m_pDevice						{ nullptr };

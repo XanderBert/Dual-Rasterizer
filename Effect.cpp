@@ -6,7 +6,7 @@
 dae::Effect::Effect(ID3D11Device* pDevice, const std::wstring& assetFile):
 m_pEffect{LoadEffect(pDevice, assetFile)}
 {
-	m_pTechnique = m_pEffect->GetTechniqueByName("DefaultTechnique");
+	m_pTechnique = m_pEffect->GetTechniqueByName("DefaultTechniquePoint");
 	if (!m_pTechnique->IsValid())
 	{
 		std::wcout << L"\nTechnique not valid\n";
@@ -57,6 +57,17 @@ void dae::Effect::SetDiffuseMap(Texture* pDiffuseTexture)
 	if (m_pDiffuseMapVariable) 
 	{
 		m_pDiffuseMapVariable->SetResource(pDiffuseTexture->GetSRV());
+	}
+}
+
+void dae::Effect::SetTechnique(const LPCSTR& techniqueName)
+{
+	m_pTechnique = m_pEffect->GetTechniqueByName(techniqueName);
+	std::cout << '\n' << techniqueName << '\n';
+	if (!m_pTechnique->IsValid())
+	{
+		std::wcout << L"\nTechnique not valid\n";
+		assert(false, "\nTechnique not valid\n");
 	}
 }
 

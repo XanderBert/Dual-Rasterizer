@@ -35,6 +35,7 @@ namespace dae
 		//----------------------------------------
 		void Render(ID3D11DeviceContext* pDeviceContext) const;
 		void Update(const float* pWorldViewMatrixData);
+		void SetTechnique(const LPCSTR& techniqueName);
 	private:
 		HRESULT SetUpMesh(ID3D11Device* pDevice, std::vector<Vertex>& vertices, std::vector<uint32_t>& indices);
 

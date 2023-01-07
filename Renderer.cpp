@@ -43,12 +43,19 @@ namespace dae {
 		delete m_pCamera;		
 	}
 
-	void Renderer::Update(const Timer* pTimer)
+	void Renderer::Update(const Timer* pTimer, const LPCSTR& technique)
 	{
 		m_pCamera->Update(pTimer);
-
 		//TODO: set near and far plane as member vars
 		const Matrix worldViewMatrix{ m_pCamera->GetViewMatrix() * m_pCamera->GetProjectionMatrix(1.f,100.f) };
+
+		if(m_CurrentTechnique != technique)
+		{
+			m_pMesh->SetTechnique(technique);
+			m_CurrentTechnique = technique;
+		}
+
+		
 		m_pMesh->Update(reinterpret_cast<const float*>(&worldViewMatrix));
 	}
 

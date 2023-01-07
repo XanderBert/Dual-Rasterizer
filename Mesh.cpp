@@ -88,6 +88,11 @@ void dae::Mesh::Update(const float* pWorldViewMatrixData)
 	m_pEffect->SetWorldViewProjectionMatrix(pWorldViewMatrixData);
 }
 
+void dae::Mesh::SetTechnique(const LPCSTR& techniqueName)
+{
+	m_pEffect->SetTechnique(techniqueName);
+}
+
 HRESULT dae::Mesh::SetUpMesh(ID3D11Device* pDevice, std::vector<Vertex>& vertices, std::vector<uint32_t>& indices)
 {
 	//------------------------

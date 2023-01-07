@@ -40,6 +40,16 @@ int main(int argc, char* args[])
 	const auto pTimer = new Timer();
 	const auto pRenderer = new Renderer(pWindow);
 
+	//Techniques
+	enum Techniques
+	{
+		linear,
+		point,
+		anisotropic
+	};
+	Techniques currentTechnique{ Techniques::point };
+	LPCSTR currentTechniqueString{"DefaultTechniquePoint"};
+
 	//Start loop
 	pTimer->Start();
 	float printTimer = 0.f;
@@ -57,14 +67,23 @@ int main(int argc, char* args[])
 				break;
 			case SDL_KEYUP:
 				//Test for a key
-				//if (e.key.keysym.scancode == SDL_SCANCODE_X)
+				if (e.key.keysym.scancode == SDL_SCANCODE_F2)
+				{
+					//Change Technique
+					switch (currentTechnique)
+					{
+					case linear: currentTechnique = Techniques::point; currentTechniqueString = "DefaultTechniquePoint"; break;
+					case point: currentTechnique = Techniques::anisotropic; currentTechniqueString = "DefaultTechniqueAnisotropic"; break;
+					case anisotropic: currentTechnique = Techniques::linear; currentTechniqueString = "DefaultTechniqueLinear"; break;
+					}
+				}
 				break;
 			default: ;
 			}
 		}
 
 		//--------- Update ---------
-		pRenderer->Update(pTimer);
+		pRenderer->Update(pTimer, currentTechniqueString);
 
 		//--------- Render ---------
 		pRenderer->Render();
