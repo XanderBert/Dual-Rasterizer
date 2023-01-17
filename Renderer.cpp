@@ -20,7 +20,7 @@ namespace dae {
 		m_pCamera = new Camera{ {0.f, 0.f, -10.f},80.f,static_cast<float>(m_Width), static_cast<float>(m_Height) };
 
 		//Create Data for our mesh
-		m_pMesh = new Mesh{ m_pDevice,"Resources/vehicle.obj","Resources/vehicle_diffuse.png"};
+		m_pMesh = new Mesh{ m_pDevice,"Resources/vehicle.obj","Resources/vehicle_diffuse.png","Resources/vehicle_normal.png","Resources/vehicle_specular.png", "Resources/vehicle_gloss.png"};
 
 	}
 
@@ -46,23 +46,26 @@ namespace dae {
 	void Renderer::Update(const Timer* pTimer, const LPCSTR& technique)
 	{
 		m_pCamera->Update(pTimer);
+
 		//TODO: set near and far plane as member vars
 		const Matrix worldViewMatrix{ m_pCamera->GetViewMatrix() * m_pCamera->GetProjectionMatrix(1.f,100.f) };
 
-		if(m_CurrentTechnique != technique)
+		//TODO: Set Worldmatrix
+		const Matrix worldMatrix{};
+		const Matrix inverseMatrix{m_pCamera->GetInverseViewmatrix()};
+		m_pMesh->Update(reinterpret_cast<const float*>(&worldViewMatrix), reinterpret_cast<const float*>(&worldMatrix), reinterpret_cast<const float*>(&inverseMatrix));
+
+		//change technique if it changed
+		if (m_CurrentTechnique != technique)
 		{
 			m_pMesh->SetTechnique(technique);
 			m_CurrentTechnique = technique;
 		}
-
-		
-		m_pMesh->Update(reinterpret_cast<const float*>(&worldViewMatrix));
 	}
 
 	void Renderer::Render() const
 	{
 		if (!m_IsInitialized) return;
-
 		//1. Clear RTV and DSV
 		//
 		constexpr ColorRGB clearColor = ColorRGB{ 0.f, 0.f, 0.3f };
@@ -71,6 +74,7 @@ namespace dae {
 
 		//2. Set pipeline + Invoke Drawcalls (= RENDER)
 		//
+		
 		m_pMesh->Render(m_pDeviceContext);
 
 		//3.Present BackBuffer (SWAP)

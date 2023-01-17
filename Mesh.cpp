@@ -12,9 +12,11 @@ dae::Mesh::Mesh(ID3D11Device* pDevice, std::vector<Vertex>& vertices, std::vecto
 	SetUpMesh(pDevice, vertices, indices);
 }
 
-dae::Mesh::Mesh(ID3D11Device* pDevice, const std::string& objFile, const std::string& diffuseFile)
+dae::Mesh::Mesh(ID3D11Device* pDevice, const std::string& objFile, const std::string& diffuseFile, const std::string& normalFile, const std::string& specularFile, const std::string& glossinessFile)
+
 :m_pEffect{ new Effect{pDevice, L"Resources/PosCol3D.fx"} }
 {
+
 	std::vector<Vertex> vertices{};
 	std::vector<uint32_t> indices{};
 
@@ -26,14 +28,47 @@ dae::Mesh::Mesh(ID3D11Device* pDevice, const std::string& objFile, const std::st
 		return;
 	}
 
-	m_pTexture = new Texture{ diffuseFile, pDevice };
-	if(m_pTexture)
+	//TODO Make function to load all maps.
+	m_pDiffuseMap = new Texture{ diffuseFile, pDevice };
+	if(m_pDiffuseMap)
 	{
-		m_pEffect->SetDiffuseMap(m_pTexture);
-	}	
+		m_pEffect->SetDiffuseMap(m_pDiffuseMap);
+	}else
+	{
+		std::wcout << "Texture Not loaded!";
+	}
+
+	m_pNormalMap = new Texture{ normalFile, pDevice };
+	if (m_pNormalMap)
+	{
+		m_pEffect->SetNormalMap(m_pNormalMap);
+	}
+	else
+	{
+		std::wcout << "Texture Not loaded!";
+	}
+
+	m_pSpecularMap = new Texture{ specularFile, pDevice };
+	if (m_pSpecularMap)
+	{
+		m_pEffect->SetSpecularMap(m_pSpecularMap);
+	}
+	else
+	{
+		std::wcout << "Texture Not loaded!";
+	}
+
+	m_pGlossinessMap = new Texture{ glossinessFile, pDevice };
+	if (m_pGlossinessMap)
+	{
+		m_pEffect->SetGlossinessMap(m_pGlossinessMap);
+	}
+	else
+	{
+		std::wcout << "Texture Not loaded!";
+	}
 
 	m_NumIndices = static_cast<uint32_t>(indices.size());
-
 	SetUpMesh(pDevice, vertices, indices);
 }
 
@@ -44,7 +79,10 @@ dae::Mesh::~Mesh()
 	if(m_pIndexBuffer)m_pIndexBuffer->Release();
 
 	delete m_pEffect;
-	delete m_pTexture;
+	delete m_pDiffuseMap;
+	delete m_pNormalMap;
+	delete m_pSpecularMap;
+	delete m_pGlossinessMap;
 }
 
 void dae::Mesh::Render(ID3D11DeviceContext* pDeviceContext) const
@@ -83,9 +121,17 @@ void dae::Mesh::Render(ID3D11DeviceContext* pDeviceContext) const
 	}
 }
 
-void dae::Mesh::Update(const float* pWorldViewMatrixData)
+void dae::Mesh::Update(const float* pWorldViewMatrixData, const float* pWorldMatrixData, const float* pInverseMatrixData)
 {
+
+	Matrix translation{ Vector3::UnitX, Vector3::UnitY, Vector3::UnitZ, Vector3::Zero };
+	Matrix rotation{ Vector3::UnitX, Vector3::UnitY, Vector3::UnitZ, Vector3::Zero };
+	Matrix scale{ Vector3::UnitX, Vector3::UnitY, Vector3::UnitZ, Vector3::Zero };
+	Matrix world{ translation * rotation * scale };
+
 	m_pEffect->SetWorldViewProjectionMatrix(pWorldViewMatrixData);
+	m_pEffect->SetWorldMatrix(reinterpret_cast<const float*>(&world));
+	m_pEffect->SetInverseViewMatrix(pInverseMatrixData);
 }
 
 void dae::Mesh::SetTechnique(const LPCSTR& techniqueName)
@@ -98,7 +144,7 @@ HRESULT dae::Mesh::SetUpMesh(ID3D11Device* pDevice, std::vector<Vertex>& vertice
 	//------------------------
 	// Create Vertex layout
 	//------------------------
-	static constexpr uint32_t numElements{ 3 };
+	static constexpr uint32_t numElements{ 4 };
 	D3D11_INPUT_ELEMENT_DESC vertexDesc[numElements]{};
 
 	vertexDesc[0].SemanticName = "POSITION";
@@ -106,15 +152,25 @@ HRESULT dae::Mesh::SetUpMesh(ID3D11Device* pDevice, std::vector<Vertex>& vertice
 	vertexDesc[0].AlignedByteOffset = 0;
 	vertexDesc[0].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 
-	vertexDesc[1].SemanticName = "COLOR";
+	/*vertexDesc[1].SemanticName = "COLOR";
+	vertexDesc[1].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	vertexDesc[1].AlignedByteOffset = 12;
+	vertexDesc[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;*/
+
+	vertexDesc[1].SemanticName = "TANGENT";
 	vertexDesc[1].Format = DXGI_FORMAT_R32G32B32_FLOAT;
 	vertexDesc[1].AlignedByteOffset = 12;
 	vertexDesc[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 
-	vertexDesc[2].SemanticName = "TEXCOORD";
+	vertexDesc[2].SemanticName = "NORMAL";
 	vertexDesc[2].Format = DXGI_FORMAT_R32G32B32_FLOAT;
 	vertexDesc[2].AlignedByteOffset = 24;
 	vertexDesc[2].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+
+	vertexDesc[3].SemanticName = "TEXCOORD";
+	vertexDesc[3].Format = DXGI_FORMAT_R32G32_FLOAT;
+	vertexDesc[3].AlignedByteOffset = 36;
+	vertexDesc[3].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 
 	//------------------------
 	// Create Input Layout

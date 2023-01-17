@@ -1,21 +1,42 @@
 #include "pch.h"
 #include "Camera.h"
 
-dae::Camera::Camera(const Vector3& origin, const float fovAngle, float width, float height):
-m_Origin(origin),
-m_FOV(fovAngle * TO_RADIANS / 2.f),
-m_AspectRatio(width / height)
+dae::Camera::Camera(const Vector3& origin, const float fovAngle, float width, float height) :
+	m_Origin(origin),
+	m_FOV(fovAngle* TO_RADIANS / 2.f),
+	m_AspectRatio(width / height),
+	m_InverseViewMatrix()
 {
 }
 
-dae::Matrix dae::Camera::GetViewMatrix() const
+dae::Matrix dae::Camera::GetViewMatrix()
 {
-	return Matrix::CreateLookAtLH(m_Origin, m_Forward, m_Up);
+	m_Right = Vector3::Cross(Vector3::UnitY, m_Forward).Normalized();
+	m_Up = Vector3::Cross(m_Forward, m_Right);
+
+	const Matrix InvViewMatrix = Matrix
+	{
+		m_Right,
+		m_Up,
+		m_Forward,
+		m_Origin
+	};
+
+	//SET THE INVERSE MATRIX
+	m_InverseViewMatrix = InvViewMatrix;
+
+	return Matrix::Inverse(InvViewMatrix);
+	//return Matrix::CreateLookAtLH(m_Origin, m_Forward, m_Up);
 }
 
 dae::Matrix dae::Camera::GetProjectionMatrix(float zn, float zf) const
 {
 	return Matrix::CreatePerspectiveFovLH(m_FOV, m_AspectRatio, zn, zf);
+}
+
+dae::Matrix dae::Camera::GetInverseViewmatrix()
+{
+	return m_InverseViewMatrix;
 }
 
 void dae::Camera::Update(const Timer* pTimer)

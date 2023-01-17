@@ -1,5 +1,4 @@
 #pragma once
-
 struct SDL_Window;
 struct SDL_Surface;
 
@@ -44,7 +43,7 @@ namespace dae
 		Mesh* m_pMesh{ nullptr };
 
 		Camera* m_pCamera{ nullptr };
-		LPCSTR m_CurrentTechnique{};
+		LPCSTR m_CurrentTechnique{"DefaultTechniquePoint"};
 
 		//Pointers for Initialization
 		ID3D11Device* m_pDevice						{ nullptr };

@@ -18,8 +18,9 @@ namespace dae
 		//----------------------------------------
 		// General Methods
 		//----------------------------------------
-		[[nodiscard]] Matrix GetViewMatrix() const;
+		[[nodiscard]] Matrix GetViewMatrix();
 		[[nodiscard]] Matrix GetProjectionMatrix(float zn, float zf) const;
+		[[nodiscard]] Matrix GetInverseViewmatrix();
 		void Update(const Timer* pTimer);
 		
 	private:
@@ -31,7 +32,7 @@ namespace dae
 		float m_AspectRatio{};
 		float m_TotalYaw{};
 		float m_TotalPitch{};
-
+		Matrix m_InverseViewMatrix{};
 
 		Vector3 m_Forward{ Vector3::UnitZ };
 		Vector3 m_Up{ Vector3::UnitY };
