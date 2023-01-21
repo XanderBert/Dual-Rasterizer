@@ -72,7 +72,7 @@ namespace dae
 					{
 						// OBJ format uses 1-based arrays
 						file >> iPosition;
-						vertex.Position = positions[iPosition - 1];
+						vertex.position = positions[iPosition - 1];
 
 						if ('/' == file.peek())//is next in buffer ==  '/' ?
 						{
@@ -123,9 +123,9 @@ namespace dae
 				uint32_t index1 = indices[size_t(i) + 1];
 				uint32_t index2 = indices[size_t(i) + 2];
 
-				const Vector3& p0 = vertices[index0].Position;
-				const Vector3& p1 = vertices[index1].Position;
-				const Vector3& p2 = vertices[index2].Position;
+				const Vector3& p0 = vertices[index0].position;
+				const Vector3& p1 = vertices[index1].position;
+				const Vector3& p2 = vertices[index2].position;
 				const Vector2& uv0 = vertices[index0].uv;
 				const Vector2& uv1 = vertices[index1].uv;
 				const Vector2& uv2 = vertices[index2].uv;
@@ -149,10 +149,11 @@ namespace dae
 
 				if (flipAxisAndWinding)
 				{
-					v.Position.z *= -1.f;
+					v.position.z *= -1.f;
 					v.normal.z *= -1.f;
 					v.tangent.z *= -1.f;
 				}
+
 			}
 
 			return true;

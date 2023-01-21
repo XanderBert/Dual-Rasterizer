@@ -45,6 +45,9 @@ namespace dae
 		Camera* m_pCamera{ nullptr };
 		LPCSTR m_CurrentTechnique{"DefaultTechniquePoint"};
 
+		const float m_NearPlane{};
+		const float m_FarPlane{};
+
 		//Pointers for Initialization
 		ID3D11Device* m_pDevice						{ nullptr };
 		ID3D11DeviceContext* m_pDeviceContext		{ nullptr };

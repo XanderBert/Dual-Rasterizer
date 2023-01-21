@@ -13,7 +13,6 @@ dae::Texture::Texture(const std::string& path, ID3D11Device* pDevice)
 		assert(false, "\nSDL_Surface(Texture) not loaded\n");
 	}
 
-
 	DXGI_FORMAT format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	D3D11_TEXTURE2D_DESC desc{};
 	desc.Width = pSurface->w;

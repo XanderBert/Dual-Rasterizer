@@ -6,10 +6,10 @@ namespace dae
 	class Effect;
 	struct Vertex final
 	{
-		Vector3 Position;
+		Vector3 position;
 		//ColorRGB Color;
-		Vector3 tangent;
 		Vector3 normal;
+		Vector3 tangent;
 		Vector2 uv;
 	};
 
@@ -35,7 +35,7 @@ namespace dae
 		// General Methods
 		//----------------------------------------
 		void Render(ID3D11DeviceContext* pDeviceContext) const;
-		void Update(const float* pWorldViewMatrixData, const float* pWorldMatrixData, const float* pInverseMatrixData);
+		void Update(const float* pWorldViewMatrixData, const float* pInverseMatrixData);
 		void SetTechnique(const LPCSTR& techniqueName);
 	private:
 		HRESULT SetUpMesh(ID3D11Device* pDevice, std::vector<Vertex>& vertices, std::vector<uint32_t>& indices);
@@ -54,5 +54,7 @@ namespace dae
 		Texture* m_pNormalMap{ nullptr };
 		Texture* m_pSpecularMap{ nullptr };
 		Texture* m_pGlossinessMap{ nullptr };
+
+		Matrix m_WorldMatrix{};
 	};
 }

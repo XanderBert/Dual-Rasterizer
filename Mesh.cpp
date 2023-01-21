@@ -16,6 +16,11 @@ dae::Mesh::Mesh(ID3D11Device* pDevice, const std::string& objFile, const std::st
 
 :m_pEffect{ new Effect{pDevice, L"Resources/PosCol3D.fx"} }
 {
+	m_WorldMatrix = { {1.f, 0.f, 0.f, 0.f},
+						{0.f, 1.f, 0.f, 0.f},
+						{0.f, 0.f, 1.f, 0.f},
+							{0.f, 0.f, 0.f, 1.f} };
+
 
 	std::vector<Vertex> vertices{};
 	std::vector<uint32_t> indices{};
@@ -101,7 +106,7 @@ void dae::Mesh::Render(ID3D11DeviceContext* pDeviceContext) const
 	// Set vertex buffer
 	//------------------------
 	constexpr UINT stride{ sizeof(Vertex) };
-	constexpr UINT offset{};
+	constexpr UINT offset{0};
 	pDeviceContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &stride, &offset);
 
 	//------------------------
@@ -121,16 +126,10 @@ void dae::Mesh::Render(ID3D11DeviceContext* pDeviceContext) const
 	}
 }
 
-void dae::Mesh::Update(const float* pWorldViewMatrixData, const float* pWorldMatrixData, const float* pInverseMatrixData)
+void dae::Mesh::Update(const float* pWorldViewMatrixData, const float* pInverseMatrixData)
 {
-
-	Matrix translation{ Vector3::UnitX, Vector3::UnitY, Vector3::UnitZ, Vector3::Zero };
-	Matrix rotation{ Vector3::UnitX, Vector3::UnitY, Vector3::UnitZ, Vector3::Zero };
-	Matrix scale{ Vector3::UnitX, Vector3::UnitY, Vector3::UnitZ, Vector3::Zero };
-	Matrix world{ translation * rotation * scale };
-
 	m_pEffect->SetWorldViewProjectionMatrix(pWorldViewMatrixData);
-	m_pEffect->SetWorldMatrix(reinterpret_cast<const float*>(&world));
+	m_pEffect->SetWorldMatrix(reinterpret_cast<const float*>(&m_WorldMatrix));
 	m_pEffect->SetInverseViewMatrix(pInverseMatrixData);
 }
 
@@ -152,20 +151,15 @@ HRESULT dae::Mesh::SetUpMesh(ID3D11Device* pDevice, std::vector<Vertex>& vertice
 	vertexDesc[0].AlignedByteOffset = 0;
 	vertexDesc[0].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 
-	/*vertexDesc[1].SemanticName = "COLOR";
-	vertexDesc[1].Format = DXGI_FORMAT_R32G32B32_FLOAT;
-	vertexDesc[1].AlignedByteOffset = 12;
-	vertexDesc[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;*/
+	vertexDesc[2].SemanticName = "NORMAL";
+	vertexDesc[2].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	vertexDesc[2].AlignedByteOffset = 12;
+	vertexDesc[2].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 
 	vertexDesc[1].SemanticName = "TANGENT";
 	vertexDesc[1].Format = DXGI_FORMAT_R32G32B32_FLOAT;
-	vertexDesc[1].AlignedByteOffset = 12;
+	vertexDesc[1].AlignedByteOffset = 24;
 	vertexDesc[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-
-	vertexDesc[2].SemanticName = "NORMAL";
-	vertexDesc[2].Format = DXGI_FORMAT_R32G32B32_FLOAT;
-	vertexDesc[2].AlignedByteOffset = 24;
-	vertexDesc[2].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 
 	vertexDesc[3].SemanticName = "TEXCOORD";
 	vertexDesc[3].Format = DXGI_FORMAT_R32G32_FLOAT;
@@ -186,7 +180,7 @@ HRESULT dae::Mesh::SetUpMesh(ID3D11Device* pDevice, std::vector<Vertex>& vertice
 		&m_pInputLayout
 	);
 
-	if (FAILED(result)) assert(false, "Failed Creating InputLayout");
+	if (FAILED(result)) { assert(false, "Failed Creating InputLayout");}
 
 	//------------------------
 	// Create Vertex Buffer
@@ -207,8 +201,12 @@ HRESULT dae::Mesh::SetUpMesh(ID3D11Device* pDevice, std::vector<Vertex>& vertice
 	//------------------------
 	// Create Index Buffer
 	//------------------------
+	m_NumIndices = static_cast<uint32_t>(indices.size());
+	bd.Usage = D3D11_USAGE_IMMUTABLE;
 	bd.ByteWidth = sizeof(uint32_t) * m_NumIndices;
 	bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	bd.CPUAccessFlags = 0;
+	bd.MiscFlags = 0;
 
 	initData.pSysMem = indices.data();
 

@@ -9,6 +9,8 @@ namespace dae {
 
 	Renderer::Renderer(SDL_Window* pWindow) :
 		m_pWindow(pWindow)
+	,	m_NearPlane(1.f)
+	,	m_FarPlane(100.f)
 	{
 		//Initialize
 		SDL_GetWindowSize(pWindow, &m_Width, &m_Height);
@@ -21,7 +23,6 @@ namespace dae {
 
 		//Create Data for our mesh
 		m_pMesh = new Mesh{ m_pDevice,"Resources/vehicle.obj","Resources/vehicle_diffuse.png","Resources/vehicle_normal.png","Resources/vehicle_specular.png", "Resources/vehicle_gloss.png"};
-
 	}
 
 	Renderer::~Renderer()
@@ -47,13 +48,9 @@ namespace dae {
 	{
 		m_pCamera->Update(pTimer);
 
-		//TODO: set near and far plane as member vars
-		const Matrix worldViewMatrix{ m_pCamera->GetViewMatrix() * m_pCamera->GetProjectionMatrix(1.f,100.f) };
-
-		//TODO: Set Worldmatrix
-		const Matrix worldMatrix{};
+		const Matrix worldViewMatrix{ m_pCamera->GetViewMatrix() * m_pCamera->GetProjectionMatrix(m_NearPlane,m_FarPlane) };
 		const Matrix inverseMatrix{m_pCamera->GetInverseViewmatrix()};
-		m_pMesh->Update(reinterpret_cast<const float*>(&worldViewMatrix), reinterpret_cast<const float*>(&worldMatrix), reinterpret_cast<const float*>(&inverseMatrix));
+		m_pMesh->Update(reinterpret_cast<const float*>(&worldViewMatrix), reinterpret_cast<const float*>(&inverseMatrix));
 
 		//change technique if it changed
 		if (m_CurrentTechnique != technique)
@@ -74,7 +71,6 @@ namespace dae {
 
 		//2. Set pipeline + Invoke Drawcalls (= RENDER)
 		//
-		
 		m_pMesh->Render(m_pDeviceContext);
 
 		//3.Present BackBuffer (SWAP)
