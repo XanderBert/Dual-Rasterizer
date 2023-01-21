@@ -1,6 +1,8 @@
 #pragma once
 #include <fstream>
 #include "Math.h"
+#include <vector>
+#include "Mesh.h"
 
 namespace dae
 {
@@ -91,17 +93,17 @@ namespace dae
 
 								// Optional vertex normal
 								file >> iNormal;
-								//vertex.normal = normals[iNormal - 1];
+								vertex.normal = normals[iNormal - 1];
 							}
 						}
 
 						vertices.push_back(vertex);
 						tempIndices[iFace] = uint32_t(vertices.size()) - 1;
-						//indices.push_back(uint32_t(vertices.size()) - 1);
+						indices.push_back(uint32_t(vertices.size()) - 1);
 					}
 
 					indices.push_back(tempIndices[0]);
-					if (flipAxisAndWinding) 
+					if (flipAxisAndWinding)
 					{
 						indices.push_back(tempIndices[2]);
 						indices.push_back(tempIndices[1]);

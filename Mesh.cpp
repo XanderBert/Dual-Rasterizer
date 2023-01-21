@@ -140,6 +140,13 @@ void dae::Mesh::SetTechnique(const LPCSTR& techniqueName)
 
 HRESULT dae::Mesh::SetUpMesh(ID3D11Device* pDevice, std::vector<Vertex>& vertices, std::vector<uint32_t>& indices)
 {
+	//for (auto element : vertices)
+	//{
+	//	std::cout << std::to_string(element.tangent.x) << ', ';
+	//	std::cout << std::to_string(element.tangent.y) << ', ';
+	//	std::cout << std::to_string(element.tangent.z) << '\n';
+	//}
+
 	//------------------------
 	// Create Vertex layout
 	//------------------------

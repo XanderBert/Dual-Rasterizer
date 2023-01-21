@@ -108,17 +108,20 @@ float4 PSAnisotropic(VS_OUTPUT input) : SV_TARGET
 {	
 //ERROR
 	float3 binormal = cross(input.Normal, input.Tangent);
-	float tangentSpaceAxis = float4x4(float4(input.Tangent, 0.0f), float4(binormal, 0.0f), float4(input.Normal, 0.0), float4(0.0f, 0.0f, 0.0f, 1.0f));
-	float3 normalMap = 2.0f * gNormalMap.Sample(samPointAnisotropic, input.uv).rgb - float3(1.f,1.f,1.f);
-	float3 normal = mul(float4(normalMap, 0.0f), tangentSpaceAxis);
-	float observedArea = clamp(saturate(dot(normal, -gLightDirection)),0,1);
+	float4x4 tangentSpaceAxis = float4x4(float4(input.Tangent, 0.0f), float4(binormal, 0.0f), float4(input.Normal, 0.0), float4(0.0f, 0.0f, 0.0f, 1.0f));
+	float3 currentNormalMap = 2.0f * gNormalMap.Sample(samPointAnisotropic, input.uv).rgb - float3(1.0f, 1.0f, 1.0f);
+	float3 normal = mul(float4(currentNormalMap, 0.0f), tangentSpaceAxis);
 
 	float3 viewDirection = normalize(input.WorldPosition.xyz - gViewInverseMatrix[3].xyz);
+
+	float observedArea = saturate(dot(normal, -gLightDirection));
+
 	float4 lambert = CalculateLambert(1.0f, gDiffuseMap.Sample(samPointAnisotropic, input.uv));
+
 	float specularExp = gShininess * gGlossinessMap.Sample(samPointAnisotropic, input.uv).r;
 	float4 specular = gSpecularMap.Sample(samPointAnisotropic, input.uv) * CalculatePhong(1.0f, specularExp, -gLightDirection, viewDirection, input.Normal);
 
-	return float4((gLightIntensity * lambert + specular) * observedArea  ); 
+	return (gLightIntensity * lambert + specular) * observedArea;
 }
 
 //Linear
