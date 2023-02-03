@@ -2,7 +2,7 @@
 #include <fstream>
 #include "Math.h"
 #include <vector>
-#include "Mesh.h"
+#include "Mesh_Hardware.h"
 
 namespace dae
 {
@@ -11,7 +11,8 @@ namespace dae
 		//Just parses vertices and indices
 #pragma warning(push)
 #pragma warning(disable : 4505) //Warning unreferenced local function
-		static bool ParseOBJ(const std::string& filename, std::vector<Vertex>& vertices, std::vector<uint32_t>& indices, bool flipAxisAndWinding = true)
+		template <typename  VertexType>
+		static bool ParseOBJ(const std::string& filename, std::vector<VertexType>& vertices, std::vector<uint32_t>& indices, bool flipAxisAndWinding = true)
 		{
 			std::ifstream file(filename);
 			if (!file)
@@ -66,7 +67,7 @@ namespace dae
 					//add the material index as attibute to the attribute array
 					//
 					// Faces or triangles
-					Vertex vertex{};
+					VertexType vertex{};
 					size_t iPosition, iTexCoord, iNormal;
 
 					uint32_t tempIndices[3];
@@ -155,9 +156,7 @@ namespace dae
 					v.normal.z *= -1.f;
 					v.tangent.z *= -1.f;
 				}
-
 			}
-
 			return true;
 		}
 #pragma warning(pop)

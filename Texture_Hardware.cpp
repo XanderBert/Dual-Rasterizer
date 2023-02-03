@@ -1,16 +1,16 @@
 #include "pch.h"
-#include "Texture.h"
+#include "Texture_Hardware.h"
 
 #include <cassert>
 
-dae::Texture::Texture(const std::string& path, ID3D11Device* pDevice)
+dae::Texture_Hardware::Texture_Hardware(const std::string& path, ID3D11Device* pDevice)
 {
 	SDL_Surface* pSurface = { IMG_Load(path.c_str()) };
 
 	if (!pSurface) 
 	{
-		std::wcout << L"\SDL_Surface(Texture) not loaded\n";
-		assert(false, "\nSDL_Surface(Texture) not loaded\n");
+		std::wcout << L"\SDL_Surface(Texture_Hardware) not loaded\n";
+		assert(false, "\nSDL_Surface(Texture_Hardware) not loaded\n");
 	}
 
 	DXGI_FORMAT format = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -34,8 +34,8 @@ dae::Texture::Texture(const std::string& path, ID3D11Device* pDevice)
 	HRESULT result = pDevice->CreateTexture2D(&desc, &initData, &m_pResource);
 	if(result != S_OK)
 	{
-		std::wcout << "Failed initializing SubResource Texture Data.\n";
-		assert(false , "Failed initializing SubResource Texture Data.\n");
+		std::wcout << "Failed initializing SubResource Texture_Hardware Data.\n";
+		assert(false , "Failed initializing SubResource Texture_Hardware Data.\n");
 	}
 
 
@@ -46,25 +46,25 @@ dae::Texture::Texture(const std::string& path, ID3D11Device* pDevice)
 	result = pDevice->CreateShaderResourceView(m_pResource, &SRVDesc, &m_pSRV);
 	if (result != S_OK)
 	{
-		std::wcout << "Failed initializing D3D11_SHADER_RESOURCE_VIEW_DESC Texture.\n";
-		assert(false, "Failed initializing D3D11_SHADER_RESOURCE_VIEW_DESC Texture.\n");
+		std::wcout << "Failed initializing D3D11_SHADER_RESOURCE_VIEW_DESC Texture_Hardware.\n";
+		assert(false, "Failed initializing D3D11_SHADER_RESOURCE_VIEW_DESC Texture_Hardware.\n");
 	}
 
 	SDL_FreeSurface(pSurface);
 }
 
-dae::Texture::~Texture()
+dae::Texture_Hardware::~Texture_Hardware()
 {
 	if(m_pResource)m_pResource->Release();
 	if(m_pSRV)m_pSRV->Release();
 }
 
-ID3D11Texture2D* dae::Texture::GetTexture2D()
+ID3D11Texture2D* dae::Texture_Hardware::GetTexture2D()
 {
 	return m_pResource;
 }
 
-ID3D11ShaderResourceView* dae::Texture::GetSRV()
+ID3D11ShaderResourceView* dae::Texture_Hardware::GetSRV()
 {
 	return m_pSRV;
 }

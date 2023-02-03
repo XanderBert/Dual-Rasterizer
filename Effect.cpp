@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Effect.h"
 #include <cassert>
-#include "Texture.h"
+#include "Texture_Hardware.h"
 
 dae::Effect::Effect(ID3D11Device* pDevice, const std::wstring& assetFile):
 m_pEffect{LoadEffect(pDevice, assetFile)}
@@ -34,11 +34,6 @@ m_pEffect{LoadEffect(pDevice, assetFile)}
 		std::wcout << L"\nm_pMatInverseViewVariable not valid\n";
 	} 
 
-	if(!GetShaderResources())
-	{
-		assert(false, "\nOne or more maps have not been fetched correctly from the effect\n");
-		std::wcout << L"\nOne or more maps have not been fetched correctly from the effect\n";
-	}
 }
 
 dae::Effect::~Effect()
@@ -72,46 +67,11 @@ void dae::Effect::SetInverseViewMatrix(const float* pData)
 	m_pMatInverseViewVariable->SetMatrix(pData);
 }
 
-void dae::Effect::SetDiffuseMap(Texture* pDiffuseTexture)
+void dae::Effect::SetDiffuseMap(Texture_Hardware* pDiffuseTexture)
 {
 	if (m_pDiffuseMapVariable) 
 	{
 		m_pDiffuseMapVariable->SetResource(pDiffuseTexture->GetSRV());
-	}
-}
-
-void dae::Effect::SetNormalMap(Texture* pNormalTexture)
-{
-	if (m_pNormalMapVarialbe)
-	{
-		m_pNormalMapVarialbe->SetResource(pNormalTexture->GetSRV());
-	}
-}
-
-void dae::Effect::SetSpecularMap(Texture* pSpecularTexture)
-{
-	if(m_pSpecularMapVariable)
-	{
-		m_pSpecularMapVariable->SetResource(pSpecularTexture->GetSRV());
-	}
-}
-
-void dae::Effect::SetGlossinessMap(Texture* pGlossinessTexture)
-{
-	if(m_pGlossinessMapVariable)
-	{
-		m_pGlossinessMapVariable->SetResource(pGlossinessTexture->GetSRV());
-	}
-}
-
-void dae::Effect::SetTechnique(const LPCSTR& techniqueName)
-{
-	m_pTechnique = m_pEffect->GetTechniqueByName(techniqueName);
-	std::cout << '\n' << techniqueName << '\n';
-	if (!m_pTechnique->IsValid())
-	{
-		std::wcout << L"\nTechnique not valid\n";
-		assert(false, "\nTechnique not valid\n");
 	}
 }
 
@@ -168,42 +128,3 @@ ID3DX11Effect* dae::Effect::LoadEffect(ID3D11Device* pDevice, const std::wstring
 	return pEffect;
 }
 
-bool dae::Effect::GetShaderResources()
-{
-	bool isLoadedCorrectly{ true };
-
-	m_pDiffuseMapVariable = m_pEffect->GetVariableByName("gDiffuseMap")->AsShaderResource();
-	if (!m_pDiffuseMapVariable->IsValid())
-	{
-		std::wcout << L"\nm_pDiffuseMapVariable not valid\n";
-		assert(false, "\nm_pDiffuseMapVariable not valid\n");
-		isLoadedCorrectly = false;
-	}
-
-
-	m_pNormalMapVarialbe = m_pEffect->GetVariableByName("gNormalMap")->AsShaderResource();
-	if (!m_pNormalMapVarialbe->IsValid())
-	{
-		std::wcout << L"\nm_pNormalMapVarialbe not valid\n";
-		assert(false, "\nm_pNormalMapVarialbe not valid\n");
-		isLoadedCorrectly = false;
-	}
-
-	m_pSpecularMapVariable = m_pEffect->GetVariableByName("gSpecularMap")->AsShaderResource();
-	if (!m_pSpecularMapVariable->IsValid())
-	{
-		std::wcout << L"\nm_pSpecularMapVariable not valid\n";
-		assert(false, "\nm_pSpecularMapVariable not valid\n");
-		isLoadedCorrectly = false;
-	}
-
-	m_pGlossinessMapVariable = m_pEffect->GetVariableByName("gGlossinessMap")->AsShaderResource();
-	if (!m_pGlossinessMapVariable->IsValid())
-	{
-		std::wcout << L"\nm_pGlossinessMapVariable not valid\n";
-		assert(false, "\nm_pGlossinessMapVariable not valid\n");
-		isLoadedCorrectly = false;
-	}
-
-	return isLoadedCorrectly;
-}

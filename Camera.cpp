@@ -39,6 +39,13 @@ dae::Matrix dae::Camera::GetInverseViewmatrix()
 	return m_InverseViewMatrix;
 }
 
+bool dae::Camera::IsOutsideFrustum(const Vector4& vector) const
+{
+	return vector.x < -1.f || vector.x > 1.f
+		|| vector.y < -1.f || vector.y > 1.f
+		|| vector.z < -1.f || vector.z > 1.f;
+}
+
 void dae::Camera::Update(const Timer* pTimer)
 {
 	const float deltaTime = pTimer->GetElapsed();
@@ -50,15 +57,19 @@ void dae::Camera::Update(const Timer* pTimer)
 	int mouseX{}, mouseY{};
 	const uint32_t mouseState = SDL_GetRelativeMouseState(&mouseX, &mouseY);
 
-	constexpr float keyboardSpeed{ 8.f };
+	float keyboardSpeed{ 8.f };
 	constexpr float mouseSpeed{ 0.7f };
 	constexpr float angularSpeed{ 5.0f * TO_RADIANS };
+
+	if (pKeyboardState[SDL_SCANCODE_LSHIFT]) keyboardSpeed *= 2;
 
 	Vector3 direction{};
 	direction += (pKeyboardState[SDL_SCANCODE_W] || pKeyboardState[SDL_SCANCODE_Z]) * m_Forward * keyboardSpeed * deltaTime;
 	direction -= pKeyboardState[SDL_SCANCODE_S] * m_Forward * keyboardSpeed * deltaTime;
 	direction -= (pKeyboardState[SDL_SCANCODE_Q] || pKeyboardState[SDL_SCANCODE_A]) * m_Right * keyboardSpeed * deltaTime;
 	direction += pKeyboardState[SDL_SCANCODE_D] * m_Right * keyboardSpeed * deltaTime;
+
+
 
 	switch (mouseState)
 	{

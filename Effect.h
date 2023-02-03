@@ -1,15 +1,15 @@
 #pragma once
 namespace dae
 {
-	class Texture;
-	class Effect final
+	class Texture_Hardware;
+	class Effect
 	{
 	public:
 		//----------------------------------------
 		// Constructor(s) and Destructor
 		//----------------------------------------
 		Effect(ID3D11Device* pDevice, const std::wstring& assetFile);
-		~Effect();
+		virtual ~Effect();
 
 		//----------------------------------------
 		//  Disabling copy/move constructor and assignment operator
@@ -29,16 +29,10 @@ namespace dae
 		void SetWorldMatrix(const float* pData);
 		void SetInverseViewMatrix(const float* pData);
 
-		//Todo Make this one function
-		void SetDiffuseMap(Texture* pDiffuseTexture);
-		void SetNormalMap(Texture* pNormalTexture);
-		void SetSpecularMap(Texture* pSpecularTexture);
-		void SetGlossinessMap(Texture* pGlossinessTexture);
-		//todo end
+		void SetDiffuseMap(Texture_Hardware* pDiffuseTexture);
+		
 
-		void SetTechnique(const LPCSTR& techniqueName);
-
-	private:
+	protected:
 		//----------------------------------------
 		// Datamembers
 		//----------------------------------------
@@ -51,14 +45,10 @@ namespace dae
 
 
 		ID3DX11EffectShaderResourceVariable* m_pDiffuseMapVariable{ nullptr };
-		ID3DX11EffectShaderResourceVariable* m_pNormalMapVarialbe{ nullptr };
-		ID3DX11EffectShaderResourceVariable* m_pSpecularMapVariable{ nullptr };
-		ID3DX11EffectShaderResourceVariable* m_pGlossinessMapVariable{ nullptr };
 
 		//----------------------------------------
 		// General Methods
 		//----------------------------------------
 		static ID3DX11Effect* LoadEffect(ID3D11Device* pDevice, const std::wstring& assetFile);
-		bool GetShaderResources();
 	};
 }

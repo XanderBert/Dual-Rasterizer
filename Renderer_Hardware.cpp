@@ -1,13 +1,13 @@
 #include "pch.h"
-#include "Renderer.h"
+#include "Renderer_Hardware.h"
 #include <cassert>
-#include "Mesh.h"
+#include "Mesh_Hardware.h"
 #include "Camera.h"
 #include "Effect.h"
 
 namespace dae {
 
-	Renderer::Renderer(SDL_Window* pWindow) :
+	Renderer_Hardware::Renderer_Hardware(SDL_Window* pWindow, Camera* pCamera) :
 		m_pWindow(pWindow)
 	,	m_NearPlane(1.f)
 	,	m_FarPlane(100.f)
@@ -19,13 +19,22 @@ namespace dae {
 		SetIsInitialized(InitializeDirectX());
 
 		//Initialize Camera
-		m_pCamera = new Camera{ {0.f, 0.f, -10.f},80.f,static_cast<float>(m_Width), static_cast<float>(m_Height) };
+		m_pCamera = pCamera;
 
 		//Create Data for our mesh
-		m_pMesh = new Mesh{ m_pDevice,"Resources/vehicle.obj","Resources/vehicle_diffuse.png","Resources/vehicle_normal.png","Resources/vehicle_specular.png", "Resources/vehicle_gloss.png"};
+		m_pMesh = new Mesh_Hardware{ m_pDevice,
+			"Resources/vehicle.obj",
+			"Resources/fireFX.obj",
+			"Resources/vehicle_diffuse.png",
+			"Resources/vehicle_normal.png",
+			"Resources/vehicle_specular.png",
+			"Resources/vehicle_gloss.png",
+			"Resources/fireFX_diffuse.png"
+		};
+		
 	}
 
-	Renderer::~Renderer()
+	Renderer_Hardware::~Renderer_Hardware()
 	{
 		if (m_pRenderTargetView) m_pRenderTargetView->Release();
 		if (m_pRenderTargetBuffer) m_pRenderTargetBuffer->Release();
@@ -41,13 +50,11 @@ namespace dae {
 		if (m_pDevice) m_pDevice->Release();
 
 		delete m_pMesh;
-		delete m_pCamera;		
+		//delete m_pCamera;		
 	}
 
-	void Renderer::Update(const Timer* pTimer, const LPCSTR& technique)
+	void Renderer_Hardware::Update(const Timer* pTimer, const LPCSTR& technique)
 	{
-		m_pCamera->Update(pTimer);
-
 		const Matrix worldViewMatrix{ m_pCamera->GetViewMatrix() * m_pCamera->GetProjectionMatrix(m_NearPlane,m_FarPlane) };
 		const Matrix inverseMatrix{m_pCamera->GetInverseViewmatrix()};
 		m_pMesh->Update(reinterpret_cast<const float*>(&worldViewMatrix), reinterpret_cast<const float*>(&inverseMatrix));
@@ -58,14 +65,20 @@ namespace dae {
 			m_pMesh->SetTechnique(technique);
 			m_CurrentTechnique = technique;
 		}
+
+		if (m_IsMeshRotating)
+		{
+			constexpr float meshRotationPerSecond{ 0.25f };
+			m_pMesh->Rotate(meshRotationPerSecond * pTimer->GetElapsed());
+		}
 	}
 
-	void Renderer::Render() const
+	void Renderer_Hardware::Render() const
 	{
 		if (!m_IsInitialized) return;
 		//1. Clear RTV and DSV
 		//
-		constexpr ColorRGB clearColor = ColorRGB{ 0.f, 0.f, 0.3f };
+		constexpr ColorRGB clearColor = ColorRGB{ 0.39f, 0.59f, 0.93f };
 		m_pDeviceContext->ClearRenderTargetView(m_pRenderTargetView, &clearColor.r);
 		m_pDeviceContext->ClearDepthStencilView(m_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
 
@@ -78,7 +91,12 @@ namespace dae {
 		m_pSwapChain->Present(0, 0);
 	}
 
-	HRESULT Renderer::InitializeDirectX()
+	void Renderer_Hardware::ToggleMeshRotation()
+	{
+		m_IsMeshRotating = !m_IsMeshRotating;
+	}
+
+	HRESULT Renderer_Hardware::InitializeDirectX()
 	{
 		//Select DirectX11
 		D3D_FEATURE_LEVEL featureLevel = D3D_FEATURE_LEVEL_11_1;
@@ -226,7 +244,7 @@ namespace dae {
 		return S_OK;
 	}
 
-	void Renderer::SetIsInitialized(const HRESULT& result)
+	void Renderer_Hardware::SetIsInitialized(const HRESULT& result)
 	{
 		if (result == S_OK)
 		{

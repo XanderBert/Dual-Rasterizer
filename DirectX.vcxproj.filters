@@ -8,9 +8,17 @@
     <Filter Include="Misc">
       <UniqueIdentifier>{72056cb6-72a2-42b7-b05e-376f1ddd957e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Hardware">
+      <UniqueIdentifier>{3cf277ff-4ae9-4a8d-8c2a-feefa985997f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Software">
+      <UniqueIdentifier>{7f49619b-279a-4446-8548-f3ca81997efa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Hardware\Effects">
+      <UniqueIdentifier>{f0ea71db-69d6-4707-acb1-ce0496ab9536}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Renderer.h" />
     <ClInclude Include="Vector3.h">
       <Filter>Math</Filter>
     </ClInclude>
@@ -36,15 +44,36 @@
     <ClInclude Include="ColorRGB.h">
       <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="Effect.h" />
-    <ClInclude Include="Mesh.h" />
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="Texture.h" />
     <ClInclude Include="Utils.h" />
+    <ClInclude Include="EffectFire.h">
+      <Filter>Hardware\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectShading.h">
+      <Filter>Hardware\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Effect.h">
+      <Filter>Hardware\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer_Hardware.h">
+      <Filter>Hardware</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture_Hardware.h">
+      <Filter>Hardware</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh_Hardware.h">
+      <Filter>Hardware</Filter>
+    </ClInclude>
+    <ClInclude Include="DataTypes.h" />
+    <ClInclude Include="Texture_Software.h">
+      <Filter>Software</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer_Software.h">
+      <Filter>Software</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Vector3.cpp">
       <Filter>Math</Filter>
     </ClCompile>
@@ -61,9 +90,30 @@
       <Filter>Math</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="Effect.cpp" />
-    <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="EffectFire.cpp">
+      <Filter>Hardware\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="EffectShading.cpp">
+      <Filter>Hardware\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Effect.cpp">
+      <Filter>Hardware\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer_Hardware.cpp">
+      <Filter>Hardware</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture_Hardware.cpp">
+      <Filter>Hardware</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh_Hardware.cpp">
+      <Filter>Hardware</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture_Software.cpp">
+      <Filter>Software</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer_Software.cpp">
+      <Filter>Software</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

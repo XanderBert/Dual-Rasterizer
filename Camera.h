@@ -21,6 +21,8 @@ namespace dae
 		[[nodiscard]] Matrix GetViewMatrix();
 		[[nodiscard]] Matrix GetProjectionMatrix(float zn, float zf) const;
 		[[nodiscard]] Matrix GetInverseViewmatrix();
+		[[nodiscard]] Vector3 GetOrigin() const { return m_Origin; }
+		[[nodiscard]] bool IsOutsideFrustum(const Vector4& vector) const;
 		void Update(const Timer* pTimer);
 		
 	private:

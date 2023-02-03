@@ -58,18 +58,13 @@ namespace dae {
 
 	private:
 
-		//Row-Major Matrix
 		Vector4 data[4]
 		{
-			{1,0,0,0}, //xAxis
-			{0,1,0,0}, //yAxis
-			{0,0,1,0}, //zAxis
-			{0,0,0,1}  //T
+			{1,0,0,0}, 
+			{0,1,0,0}, 
+			{0,0,1,0},
+			{0,0,0,1}  
 		};
 
-		// v0x v0y v0z v0w
-		// v1x v1y v1z v1w
-		// v2x v2y v2z v2w
-		// v3x v3y v3z v3w
 	};
 }

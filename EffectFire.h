@@ -1,31 +1,32 @@
-#pragma once
+﻿#pragma once
+#include "Effect.h"
+
 namespace dae
 {
-	class Texture final
+	class Texture_Hardware;
+	class EffectFire final : public dae::Effect
 	{
 	public:
 		//----------------------------------------
 		// Constructor(s) and Destructor
 		//----------------------------------------
-		Texture(const std::string& path, ID3D11Device* pDevice );
-		~Texture();
+		EffectFire(ID3D11Device* pDevice, const std::wstring& assetFile);
+		~EffectFire() override; 
 		//----------------------------------------
 		//  Disabling copy/move constructor and assignment operator
 		//----------------------------------------
-		Texture(const Texture& other) = delete;
-		Texture(Texture&& other)noexcept = delete;
-		Texture& operator=(const Texture& other) = delete;
-		Texture& operator=(Texture&& other)noexcept = delete;
+		EffectFire(const EffectFire& other) = delete;
+		EffectFire(EffectFire&& other)noexcept = delete;
+		EffectFire& operator=(const EffectFire& other) = delete;
+		EffectFire& operator=(EffectFire&& other)noexcept = delete;
+
 		//----------------------------------------
 		// General Methods
 		//----------------------------------------
-		ID3D11Texture2D* GetTexture2D();
-		ID3D11ShaderResourceView* GetSRV();
 	private:
 		//----------------------------------------
 		// Datamembers
 		//----------------------------------------
-		ID3D11Texture2D* m_pResource{nullptr};
-		ID3D11ShaderResourceView* m_pSRV{ nullptr };
+
 	};
 }

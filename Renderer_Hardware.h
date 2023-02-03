@@ -4,30 +4,32 @@ struct SDL_Surface;
 
 namespace dae
 {
-	class Mesh;
+	class Mesh_Hardware;
 	class Camera;
-	class Renderer final
+	class Renderer_Hardware final
 	{
 	public:
 		//----------------------------------------
 		// Constructor(s) and Destructor
 		//----------------------------------------
-		Renderer(SDL_Window* pWindow);
-		~Renderer();
+		Renderer_Hardware(SDL_Window* pWindow, Camera* pCamera);
+		~Renderer_Hardware();
 
 		//----------------------------------------
 		//  Disabling copy/move constructor and assignment operator
 		//----------------------------------------
-		Renderer(const Renderer&) = delete;
-		Renderer(Renderer&&) noexcept = delete;
-		Renderer& operator=(const Renderer&) = delete;
-		Renderer& operator=(Renderer&&) noexcept = delete;
+		Renderer_Hardware(const Renderer_Hardware&) = delete;
+		Renderer_Hardware(Renderer_Hardware&&) noexcept = delete;
+		Renderer_Hardware& operator=(const Renderer_Hardware&) = delete;
+		Renderer_Hardware& operator=(Renderer_Hardware&&) noexcept = delete;
 
 		//----------------------------------------
 		// General Methods
 		//----------------------------------------
 		void Update(const Timer* pTimer, const LPCSTR& technique);
 		void Render() const;
+
+		void ToggleMeshRotation();
 
 	private:
 		//----------------------------------------
@@ -40,13 +42,15 @@ namespace dae
 
 		bool m_IsInitialized{ false };
 
-		Mesh* m_pMesh{ nullptr };
+		Mesh_Hardware* m_pMesh{ nullptr };
 
 		Camera* m_pCamera{ nullptr };
 		LPCSTR m_CurrentTechnique{"DefaultTechniquePoint"};
 
 		const float m_NearPlane{};
 		const float m_FarPlane{};
+
+		bool m_IsMeshRotating{ false };
 
 		//Pointers for Initialization
 		ID3D11Device* m_pDevice						{ nullptr };
