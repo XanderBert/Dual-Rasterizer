@@ -7,7 +7,8 @@ Rendereing of  model with CPU rasterazation and GPU rasterazation with Direct X.
 ![Image](/DualRasterizer_DirectX.PNG)
 #### Software
 ![Image](/DualRasterizer_Software.PNG)
-
+![Image](/DualRasterizer_Software_BoundingBox.PNG)
+![Image](/DualRasterizer_Software_Depth.PNG)
 ## INPUT
 - MOUSE: <br>
 (Camera) Rotate Yaw (RMB + Mouse Move X) <br>
