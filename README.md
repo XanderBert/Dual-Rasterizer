@@ -2,7 +2,7 @@
 
 Rendereing of  model with CPU rasterazation and GPU rasterazation.
 
-#INPUT
+# INPUT
 MOUSE: 
 - (Camera) Rotate Yaw (RMB + Mouse Move X) 
 - (Camera) Rotate Pitch (RMB + Mouse Move Y) 
