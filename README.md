@@ -29,3 +29,6 @@ Rendereing of  model with CPU rasterazation and GPU rasterazation with Direct X.
 (Software Only) Toggle NormalMap (On/Off) (‘F6’) <br>
 (Software Only) Toggle DepthBuffer Visualization (On/Off) (‘F7’) <br>
 (Software Only) Toggle BoundingBox Visualization (On/Off) (‘F8’) <br>
+## Pictures
+![Image](/DualRasterizer_DirectX.PNG)
+![Image](/DualRasterizer_Software.PNG)
