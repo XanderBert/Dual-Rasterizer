@@ -116,4 +116,8 @@
       <Filter>Software</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="DualRasterizer_DirectX.PNG" />
+    <Image Include="DualRasterizer_Software.PNG" />
+  </ItemGroup>
 </Project>
